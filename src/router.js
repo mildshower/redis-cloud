@@ -1,6 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
-const client = require("redis").createClient();
+let client;
+if (process.env.REDISTOGO_URL) {
+  const rtg = require("url").parse(process.env.REDISTOGO_URL);
+  client = require("redis").createClient(rtg.port, rtg.hostname);
+} else {
+  client = require("redis").createClient();
+}
 const { setValue, serveValue } = require("./handlers");
 
 const app = express();
