@@ -23,4 +23,12 @@ const setValue = function (req, res) {
   });
 };
 
-module.exports = { serveValue, setValue };
+const serveKeys = function (req, res) {
+  selectDatabase(req.app.locals.client, res, req.params.databaseId, () => {
+    req.app.locals.client.keys("*", (err, keys) => {
+      res.json({ keys, err });
+    });
+  });
+};
+
+module.exports = { serveValue, setValue, serveKeys };
