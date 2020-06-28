@@ -87,7 +87,6 @@ const flushDB = function (req, res) {
 
 const verifyRequest = function (req, res, next) {
   if (req.header("st-key") === (process.env.st_redis_auth_key || "st123")) {
-    console.log("verified successfully: ", req.hostName);
     next();
   } else {
     res.json({ err: { message: "Invalid Auth-Key" } });
