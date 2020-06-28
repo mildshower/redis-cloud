@@ -12,7 +12,7 @@ const {
   flushDB,
   verifyRequest,
   addToLeft,
-  popFromRightWait,
+  popFromRight,
 } = require("./handlers");
 
 const app = express();
@@ -32,6 +32,6 @@ app.get("/getField/:databaseId/:tableName/:field", serveField);
 app.post("/delFields/:databaseId", removeField);
 app.post("/flush/:databaseId", flushDB);
 app.post("/lpush/:databaseId", addToLeft);
-app.get("/brpop/:databaseId/:listName", popFromRightWait);
+app.get("/rpop/:databaseId/:listName", popFromRight);
 
 module.exports = app;

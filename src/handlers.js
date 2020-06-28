@@ -104,11 +104,11 @@ const addToLeft = function (req, res) {
   });
 };
 
-const popFromRightWait = function (req, res) {
+const popFromRight = function (req, res) {
   const { databaseId, listName } = req.params;
   selectDatabase(req.app.locals.client, res, databaseId, () => {
-    req.app.locals.client.brpop(listName, 4, (err, value) => {
-      res.json({ err, listName, value: value ? value[1] : value });
+    req.app.locals.client.rpop(listName, (err, value) => {
+      res.json({ err, listName, value });
     });
   });
 };
@@ -124,5 +124,5 @@ module.exports = {
   flushDB,
   verifyRequest,
   addToLeft,
-  popFromRightWait,
+  popFromRight,
 };
