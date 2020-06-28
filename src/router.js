@@ -8,6 +8,11 @@ const {
   setTable,
   serveTable,
   serveField,
+  removeField,
+  flushDB,
+  verifyRequest,
+  addToLeft,
+  popFromRightWait,
 } = require("./handlers");
 
 const app = express();
@@ -17,11 +22,16 @@ app.locals.client = client;
 app.use(express.json({ limit: "200kb" }));
 app.use(morgan("combined"));
 
+app.use(verifyRequest);
 app.get("/get/:databaseId/:key", serveValue);
 app.post("/set/:databaseId", setValue);
 app.get("/keys/:databaseId", serveKeys);
 app.post("/setTable/:databaseId", setTable);
 app.get("/getTable/:databaseId/:tableName", serveTable);
 app.get("/getField/:databaseId/:tableName/:field", serveField);
+app.post("/delFields/:databaseId", removeField);
+app.post("/flush/:databaseId", flushDB);
+app.post("/lpush/:databaseId", addToLeft);
+app.get("/brpop/:databaseId/:listName", popFromRightWait);
 
 module.exports = app;

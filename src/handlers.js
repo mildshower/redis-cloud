@@ -68,6 +68,51 @@ const serveField = function (req, res) {
   });
 };
 
+const removeField = function (req, res) {
+  const { tableName, fields } = req.body;
+  selectDatabase(req.app.locals.client, res, req.params.databaseId, () => {
+    req.app.locals.client.hdel(tableName, ...fields, (err, modifiedCount) => {
+      res.json({ tableName, modifiedCount, err });
+    });
+  });
+};
+
+const flushDB = function (req, res) {
+  selectDatabase(req.app.locals.client, res, req.params.databaseId, () => {
+    req.app.locals.client.flushdb((err, message) => {
+      res.json({ message, err });
+    });
+  });
+};
+
+const verifyRequest = function (req, res, next) {
+  if (req.header("auth-key") === (process.env.st_redis_auth_key || "st123"))
+    next();
+  else res.json({ err: { message: "Invalid Auth-Key" } });
+};
+
+const addToLeft = function (req, res) {
+  const { listName, values } = req.body;
+  selectDatabase(req.app.locals.client, res, req.params.databaseId, () => {
+    req.app.locals.client.lpush(
+      listName,
+      ...values,
+      (err, modificationCount) => {
+        res.json({ err, modificationCount });
+      }
+    );
+  });
+};
+
+const popFromRightWait = function (req, res) {
+  const { databaseId, listName } = req.params;
+  selectDatabase(req.app.locals.client, res, databaseId, () => {
+    req.app.locals.client.brpop(listName, 4, (err, value) => {
+      res.json({ err, listName, value: value ? value[1] : value });
+    });
+  });
+};
+
 module.exports = {
   serveValue,
   setValue,
@@ -75,4 +120,9 @@ module.exports = {
   setTable,
   serveTable,
   serveField,
+  removeField,
+  flushDB,
+  verifyRequest,
+  addToLeft,
+  popFromRightWait,
 };
