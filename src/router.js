@@ -22,7 +22,7 @@ app.locals.client = client;
 app.use(express.json({ limit: "200kb" }));
 app.use(morgan("combined"));
 
-// app.use(verifyRequest);
+app.use(verifyRequest);
 app.get("/get/:databaseId/:key", serveValue);
 app.post("/set/:databaseId", setValue);
 app.get("/keys/:databaseId", serveKeys);
