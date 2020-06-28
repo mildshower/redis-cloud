@@ -94,13 +94,9 @@ const verifyRequest = function (req, res, next) {
 const addToLeft = function (req, res) {
   const { listName, values } = req.body;
   selectDatabase(req.app.locals.client, res, req.params.databaseId, () => {
-    req.app.locals.client.lpush(
-      listName,
-      ...values,
-      (err, modificationCount) => {
-        res.json({ err, modificationCount });
-      }
-    );
+    req.app.locals.client.lpush(listName, ...values, (err, length) => {
+      res.json({ err, length });
+    });
   });
 };
 
